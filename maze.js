@@ -9,6 +9,8 @@ function Cell(){
     this.visited = false
     this.visited_solve = false
     this.visited_solve2 = false
+    this.prev_i = -1
+    this.prev_j = -1
     this.render = (left, top, width, height) => {
         this.left = left
         this.top = top
@@ -111,24 +113,37 @@ maze.render()
 renderFrame()
 
 {
-    let sol = null
     let q = new Queue()
-    q.push([0, 0, 0, ''])
+    q.push([0, 0, 0])
+    maze.cells[0][0].visited_solve2 = true
     while(q.size() > 0){
-        let si = q.ref()[0], sj = q.ref()[1], dist = q.ref()[2], path = q.ref()[3]; q.pop()
-        if(si == maze.nRow - 1 && sj == maze.nCol - 1){
-            sol = path
-            break
-        }
-        maze.cells[si][sj].visited_solve2 = true
+        let si = q.ref()[0], sj = q.ref()[1], dist = q.ref()[2]; q.pop()
+        if(si == maze.nRow - 1 && sj == maze.nCol - 1) break
         let moves = [[-1, 0, 'u', 'd'], [1, 0, 'd', 'u'], [0, 1, 'r', 'l'], [0, -1, 'l', 'r']]
         for(let k=0;k<4;k++){
             let ni = si + moves[k][0], nj = sj + moves[k][1]
             if(0 <= ni && ni < maze.nRow && 0 <= nj && nj < maze.nCol && !maze.cells[ni][nj].visited_solve2 && maze.cells[si][sj][moves[k][2]]){
-                q.push([ni, nj, dist + 1, path + moves[k][2]])
+                maze.cells[ni][nj].prev_i = si
+                maze.cells[ni][nj].prev_j = sj
+                maze.cells[ni][nj].visited_solve2 = true
+                q.push([ni, nj, dist + 1])
             }
         }
     }
+
+    let sol = []
+    {
+        let i = maze.nRow - 1, j = maze.nCol - 1
+        while(!(i == 0 && j == 0)){
+            sol.push([i, j])
+            let cell = maze.cells[i][j]
+            i = cell.prev_i
+            j = cell.prev_j
+        }
+        sol.push([0, 0])
+    }
+    sol = sol.reverse()
+
     console.log(sol)
     console.log(sol.length)
 
@@ -138,25 +153,12 @@ renderFrame()
         renderFrame()
         setInterval(() => {
             if(i < sol.length){
-                let direction = sol[i]
-                if(direction === 'u'){
-                    si -= 1
-                }
-                else if(direction === 'd'){
-                    si += 1
-                }
-                else if(direction === 'l'){
-                    sj -= 1
-                }
-                else{
-                    sj += 1
-                }
-                maze.cells[si][sj].dye(new RGBA(155, 0, 0, 150))
+                maze.cells[sol[i][0]][sol[i][1]].dye(new RGBA(155, 0, 0, 150))
                 renderFrame()
                 i += 1
             }
         }, 50)
-    }, 10000)
+    }, 3000)
 
 
 }
@@ -187,8 +189,5 @@ setTimeout(()=>{
             j += 1
         }
     }, 50)
-}, 5000)
+}, 3000)
 
-
-console.log(sol.length)
-console.log(path.length)
