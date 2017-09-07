@@ -168,7 +168,7 @@ solve(maze, 0, 0, path)
 path = path.reverse()
 
 setTimeout(()=>{
-    let ti = 0, tj = 0, j = 0
+    let ti = 0, tj = 0, j = 1
     setInterval(() => {
         if(j < path.length){
             let direction = path[j]
