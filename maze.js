@@ -170,7 +170,7 @@ path = path.reverse()
 setTimeout(()=>{
     let ti = 0, tj = 0, j = 0
     setInterval(() => {
-        if(j < path.length){
+        if(j < path.length - 1){
             let direction = path[j]
             if(direction === 'u'){
                 ti -= 1
