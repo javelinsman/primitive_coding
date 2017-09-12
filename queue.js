@@ -1,21 +1,23 @@
-function Queue(){
+Queue = function(){
 	this.q = []
 	this.ind = 0
 	
-	this.push = (elem) => {
-		this.q.push(elem)
-	}
-	this.pop = () => {
-		this.ind += 1
-		elem = this.q[this.ind-1]
+	return {
+		push: (elem) => {
+			this.q.push(elem)
+		},
+		pop: () => {
+			this.ind += 1
+			elem = this.q[this.ind-1]
 		
-		this.q[this.ind-1] = null
-		return elem
-	}
-	this.ref = () => {
-		return this.q[this.ind]
-	}
-	this.size = () => {
-		return this.q.length - this.ind
+			this.q[this.ind-1] = null
+			return elem
+		},
+		ref: () => {
+			return this.q[this.ind]
+		},
+		size: () => {
+			return this.q.length - this.ind
+		}
 	}
 }
